@@ -3,13 +3,23 @@ import {getRepository} from 'typeorm'
 import {Client} from '../entity/Client';
 
 export const getClients = async (req: Request, res: Response): Promise<Response> => {
-  const clients = await getRepository(Client).find();
-  return res.json(clients);
+  try {
+    const clients = await getRepository(Client).find();
+    if(clients) {
+      return res.status(200).json(clients);
+    }
+    return res.status(404).json({msg:'Not clients found'});
+  } catch (error) {
+    return res.status(500).json({msg:'Internal server error'});
+  }
 }
 
 export const getClient = async (req: Request, res: Response): Promise<Response> => {
   const results = await getRepository(Client).findOne(req.params.id);
-  return res.json(results);
+  if(results) {
+    return res.status(200).json(results);
+  }
+  return res.status(404).json({msg:'Not client found'});
 }
 
 export const createClient = async (req: Request, res: Response): Promise<Response> => {

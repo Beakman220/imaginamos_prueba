@@ -1,21 +1,18 @@
 import 'reflect-metadata'
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import customersRoutes from './routes/client.routes';
+
 import { createConnection } from 'typeorm';
+import app from './app'
 
-const app = express();
-createConnection();
+const main =async () => {
+  try {
+    await createConnection();
+    console.log('Connected to Postgres');
+    app.listen(app.get('port'));
+    console.log('Server on port', app.get('port'));
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable to connect to db")
+  }
+}
 
-// middlewares
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-
-// routes
-app.use(customersRoutes);
-
-app.listen(3000);
-
-console.log('Server on port', 3000);
+main();
