@@ -6,5 +6,10 @@
   "password": "root",
   "database": "serviceorders",
   "entities": ["dist/entity/**/*.js"],
-  "synchronize": true
+  "migrations": ["dist/migration/*.js"],
+  "synchronize": true,
+  "cli": {
+    "entitiesDir": "dist/entity",
+    "migrationsDir": "dist/migration"
+  }
 }

@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+//import { Ticket } from './Ticket';
 
 @Entity()
-export class Client {
+export class Technical {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -16,7 +17,10 @@ export class Client {
     documentType: string;
 
     @Column()
-    document : string;
+    document : number;
+
+    @Column()
+    age: number;
 
     @Column()
     email: string;
@@ -27,12 +31,18 @@ export class Client {
     @Column()
     cellphone: string;
 
+    @Column()
+    genero: string;
+
 /*     @Column()
+    admissionDate: Date;
+
+    @Column()
     createdAt: Date;
 
     @Column()
     updateAt: Date; */
 
-/*     @OneToMany((type) => Ticket, ticket => ticket.client)
-    tickets: Ticket[]; */
+ /*    @OneToMany(() => Ticket, ticket => ticket.client)
+    ticket: Ticket[]; */
 }
