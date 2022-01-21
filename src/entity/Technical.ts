@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-//import { Ticket } from './Ticket';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from "typeorm";
+import { Ticket } from './Ticket';
 
 @Entity()
-export class Technical {
+export class Technical extends BaseEntity{
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -33,6 +33,9 @@ export class Technical {
 
     @Column()
     genero: string;
+
+    @OneToMany(() => Ticket, ticket => ticket.client)
+    tickets: Ticket[];
 
 /*     @Column()
     admissionDate: Date;

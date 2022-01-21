@@ -6,10 +6,10 @@ import to from 'await-to-js';
 
 const router = Router();
 
-router.post('/tickets/create', async (req: Request, res: Response): Promise<Response> => {
+router.post('/tickets/create/:id', async (req: Request, res: Response): Promise<Response> => {
   try {
     let ticketController = new TicketServices();
-    const [err, data] = await to(ticketController.create(req.body));
+    const [err, data] = await to(ticketController.create(req.body, req.params));
     if (err) {
       return res.status(200).json({
         error: err.toString()

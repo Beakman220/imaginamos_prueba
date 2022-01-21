@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Client } from './Client';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from "typeorm";
+import { Ticket } from './Ticket';
 
 
 @Entity()
-export class WorkService {
+export class WorkService extends BaseEntity{
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -13,5 +13,8 @@ export class WorkService {
 
     @Column()
     price: string;
+
+    @OneToMany(() => Ticket, ticket => ticket.client)
+    tickets: Ticket[];
 
 }
