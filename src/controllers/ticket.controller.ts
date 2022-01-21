@@ -1,15 +1,24 @@
-import {getRepository} from 'typeorm'
-import {Ticket} from '../entity/Ticket';
-import {Client} from '../entity/Client';
-import {Technical} from '../entity/Technical';
-import {WorkService} from '../entity/WorkService';
-import to from 'await-to-js';
-import _ from 'lodash';
-import is from '../utils/is';
+import { getRepository } from "typeorm";
+import { Ticket } from "../entity/Ticket";
+import { Client } from "../entity/Client";
+import { Technical } from "../entity/Technical";
+import { WorkService } from "../entity/WorkService";
+import to from "await-to-js";
+import _, { random } from "lodash";
+import jwt from "jsonwebtoken";
 export class TicketServices {
   create(body: any, params: any) {
     return new Promise(async (resolve, reject) => {
-      let err, duplicated, resTicket: any, resClient: any, resTechnical: any, resWorkService: any, newClient: any, newTechnical: any, newWorkService: any, res, technicals, numberRandom, technicalRandom;
+      let err,
+        resTicket: any,
+        resClient: any,
+        resTechnical: any,
+        resWorkService: any,
+        newClient: any,
+        newTechnical: any,
+        newWorkService: any,
+        res,
+        newToken: any;
 
       //findCliente
       [err, resClient] = await to(getRepository(Client).findOne(params.id));
@@ -21,102 +30,110 @@ export class TicketServices {
       if (_.isUndefined(resClient) || _.isNull(resClient)) {
         return reject(new Error(`No se encontr el cliente`));
       }
-      console.log('ticket.contrl.ts  24 ========> client', resClient);
 
-
-      //findTechnical
-      [err, technicals] = await to(getRepository(Technical).find());
+      //getRandomTechnical
+      [err, resTechnical] = await to(getRepository(Technical)
+      .createQueryBuilder("technical")
+      .orderBy("random()")
+      .limit(10)
+      .getOne());
 
       if (err) {
         return reject(err);
       }
 
-      if (_.isUndefined(technicals) || _.isNull(technicals) || !_.isArray(technicals) || technicals.length === 0) {
-        return reject(new Error(`No Existen técnicos`));
+      if (_.isUndefined(resTechnical) || _.isNull(resTechnical)) {
+        return reject(new Error(`No fue posible asignar un técnico intente más tarde`));
       }
 
-      console.log('ticket.contrlllers.js -- 38 > technicals === ', technicals);
-      console.log('ticket.contrlllers.js -- 39 > err === ', err);
-      
-      let orderTechnicals = _.sortBy(technicals, [function(t) {return t.id}]);
-
-      console.log('ticket.contrlllers.js -- 43 > orderTechnicals === ', orderTechnicals);
-      console.log('ticket.contrlllers.js -- 44 > orderTechnicals.length === ', orderTechnicals.length);
-      console.log('ticket.contrlllers.js -- 45 > orderTechnicals[orderTechnicals.length].id === ', orderTechnicals[orderTechnicals.length-1].id);
-
-      [err, resTechnical] = await to(is.technicalRandom(orderTechnicals, 0, 10));
-      console.log('ticket.contrl.ts  69 ========> resTechnical', resTechnical);
-
       //findWorkService
-      [err, resWorkService] = await to(getRepository(WorkService).findOne({description : body.service}));
+      [err, resWorkService] = await to(getRepository(WorkService).findOne({description: body.service }));
 
       if (err) {
         return reject(err);
       }
 
       if (_.isUndefined(resWorkService) || _.isNull(resWorkService)) {
-        return reject(new Error(`No se encontr el técnico`));
+        return reject(new Error(`No se encontr el servicio de trabajo`));
       }
-      console.log('ticket.contrl.ts  78 ========> resWorkService', resWorkService);
+
+      //generate token
+      newToken = jwt.sign(
+        { _id: resWorkService.id },
+        process.env.TOKEN_SECRET || "token",
+        { expiresIn: "15d" }
+      );
+
+      if (_.isUndefined(newToken) || _.isNull(newToken)) {
+        return reject(new Error(`NO se guardó el token`));
+      }
 
       //createTicket
       let newTicket = new Ticket();
-      newTicket.note = body.note;
-      newTicket.token = body.token;
-      newTicket.status = body.status;
+      newTicket.note = (body.note) ? body.note : '';
+      newTicket.token = newToken ;body.isActive
+      newTicket.isActive = (body.isActive) ? body.isActive : true;
+      newTicket.service_date = body.service_date;
       newTicket.client = resClient;
       newTicket.technical = resTechnical;
       newTicket.workService = resWorkService;
 
-      console.log('ticket.contrl.ts  89 ========> newTicket', newTicket);
-      // newTicket.client = (client) ? client : null;
       [err, resTicket] = await to(getRepository(Ticket).save(newTicket));
-      console.log('ticket.contrlllers.js -- 92 > ticket === ', resTicket);
-      console.log('ticket.contrlllers.js -- 93 > err === ', err);
 
       if (err) {
-        console.log('ticket.js -- 96 > err === ', err);
-        return reject(new Error('Ocurrio un error al registrar el ticket'));
+        return reject(
+          new Error(`Ocurrio un error al registrar el ticket Error: ${err}`)
+        );
       }
 
       //updateClient
-      if(!resClient.tickets) {
-        console.log('ticket.contrlllers.js -- 102 > client.tickets === ', resClient.tickets);
+      if (!resClient.tickets) {
         newClient = Client.create({
-          tickets: [resTicket]
+          tickets: [resTicket],
         });
       }
       getRepository(Client).merge(resClient, newClient);
       [err, res] = await to(getRepository(Client).save(newClient));
-      console.log('ticket.contrlllers.js -- 109 > res === ', res);
-      console.log('ticket.contrlllers.js -- 110 > err === ', err);
+
+      if (err) {
+        return reject(
+          new Error(`Ocurrio un error al actualizar el cliente Error: ${err}`)
+        );
+      }
 
       //updateTechnical
-      if(!resTechnical.tickets) {
-        console.log('ticket.contrlllers.js -- 114 > resTechnical.tickets === ', resTechnical.tickets);
+      if (!resTechnical.tickets) {
         newTechnical = Technical.create({
-          tickets: [resTicket]
+          tickets: [resTicket],
         });
       }
+      console.log('resTechnical 110', resTechnical);
+      console.log('newTechnical 111', newTechnical);
       getRepository(Technical).merge(resTechnical, newTechnical);
+      console.log('newTechnical 113', newTechnical);
       [err, res] = await to(getRepository(Technical).save(newTechnical));
-      console.log('ticket.contrlllers.js -- 121 > res === ', res);
-      console.log('ticket.contrlllers.js -- 122 > err === ', err);
 
-       //updateWorkService
-       if(!resWorkService.tickets) {
-        console.log('ticket.contrlllers.js -- 126 > resWorkService.tickets === ', resWorkService.tickets);
+      if (err) {
+        return reject(
+          new Error(`Ocurrio un error al actualizar el técnico Error: ${err}`)
+        );
+      }
+
+      //updateWorkService
+      if (!resWorkService.tickets) {
         newWorkService = WorkService.create({
-          tickets: [resTicket]
+          tickets: [resTicket],
         });
       }
       getRepository(WorkService).merge(resWorkService, newWorkService);
       [err, res] = await to(getRepository(WorkService).save(newWorkService));
-      console.log('ticket.contrlllers.js -- 133 > res === ', res);
-      console.log('ticket.contrlllers.js -- 134 > err === ', err);
 
+      if (err) {
+        return reject(
+          new Error(`Ocurrio un error al actualizar el Servicio de trabajo Error: ${err}`)
+        );
+      }
 
-      //respuesta
       return resolve(resTicket);
     });
   }

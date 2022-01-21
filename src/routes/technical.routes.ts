@@ -3,7 +3,6 @@ import { Request, Response} from "express";
 const { TechnicalServices } = require('../controllers/technical.controllers');
 import to from 'await-to-js';
 
-
 const router = Router();
 
 router.post('/technicals/create', async (req: Request, res: Response): Promise<Response> => {

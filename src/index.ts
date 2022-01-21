@@ -2,8 +2,11 @@ import 'reflect-metadata'
 
 import { createConnection } from 'typeorm';
 import app from './app'
+import dotenv from 'dotenv';
 
-const main =async () => {
+dotenv.config();
+
+const main = async () => {
   try {
     await createConnection();
     console.log('Connected to Postgres');
