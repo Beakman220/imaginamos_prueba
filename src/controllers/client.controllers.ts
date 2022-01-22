@@ -7,8 +7,8 @@ import _, { random } from "lodash";
 export class ClientServices {
   create(params: any) {
     return new Promise(async (resolve, reject) => {
-      let err, duplicated, client;
-
+      let err: string, duplicated: Client, client: Client[];
+      
       //duplicated
       [err, duplicated] = await to(
         getRepository(Client).findOne({
@@ -33,7 +33,7 @@ export class ClientServices {
       }
 
       //createClient
-      const newClient = getRepository(Client).create(params);
+      const newClient: Client[] = getRepository(Client).create(params);
 
       //save client
       [err, client] = await to(getRepository(Client).save(newClient));

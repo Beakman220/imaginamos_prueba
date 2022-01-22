@@ -9,12 +9,12 @@ import jwt from "jsonwebtoken";
 export class TicketServices {
   create(body: any, params: any) {
     return new Promise(async (resolve, reject) => {
-      let err,
-        resTicket: any,
-        resClient: any,
-        resTechnical: any,
-        resWorkService: any,
-        newToken: any;
+      let err: string,
+        resTicket: Ticket,
+        resClient: Client,
+        resTechnical: Technical,
+        resWorkService: WorkService,
+        newToken: string;
 
       //findCliente
       [err, resClient] = await to(getRepository(Client).findOne(params.id));
@@ -39,7 +39,7 @@ export class TicketServices {
       }
 
       if (_.isUndefined(resTechnical) || _.isNull(resTechnical)) {
-        return reject(new Error(`No fue posible asignar un técnico intente más tarde`));
+        return reject(new Error(`No fue posible asignar un técnico`));
       }
 
       //findWorkService
@@ -68,13 +68,16 @@ export class TicketServices {
       let newTicket = new Ticket();
       newTicket.note = (body.note) ? body.note : '';
       newTicket.token = newToken ;
-      newTicket.isActive = (body.isActive) ? body.isActive : true;
+      newTicket.isActive = body.isActive
       newTicket.service_date = body.service_date;
       newTicket.client = resClient;
       newTicket.technical = resTechnical;
       newTicket.workService = resWorkService;
 
       [err, resTicket] = await to(getRepository(Ticket).save(newTicket));
+
+      console.log('err', err);
+      console.log('resTicket', resTicket);
 
       if (err) {
         return reject(

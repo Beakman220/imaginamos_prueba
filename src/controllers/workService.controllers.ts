@@ -6,10 +6,27 @@ import _, { random } from "lodash";
 export class WorkServiceServices {
   create(params: any) {
     return new Promise(async (resolve, reject) => {
-      let err, duplicated, workService;
+      let err: string, duplicated: WorkService, workService: WorkService[];
+
+      //duplicated
+      [err, duplicated] = await to(
+        getRepository(WorkService).findOne({ description: params.description })
+      );
+
+      if (err) {
+        return reject(err);
+      }
+
+      if (duplicated) {
+        return reject(
+          new Error(
+            `Ya existe un servicio con descripción ${params.description}`
+          )
+        );
+      }
 
       //createWorkService
-      const newWorkService = getRepository(WorkService).create(params);
+      const newWorkService: WorkService[] = getRepository(WorkService).create(params);
 
       //saveWorkService
       [err, workService] = await to(

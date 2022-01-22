@@ -7,7 +7,7 @@ import _ from "lodash";
 export class TechnicalServices {
   create(params: any) {
     return new Promise(async (resolve, reject) => {
-      let err, duplicated, technical;
+      let err: string, duplicated: Technical, technical: Technical[];
 
       //duplicated
       [err, duplicated] = await to(
@@ -33,7 +33,7 @@ export class TechnicalServices {
       }
 
       //createTechnical
-      const newTechnical = getRepository(Technical).create(params);
+      const newTechnical: Technical[] = getRepository(Technical).create(params);
  
       //Save Technical
       [err, technical] = await to(getRepository(Technical).save(newTechnical));
@@ -52,7 +52,7 @@ export class TechnicalServices {
 
   listTickets(params: any) {
     return new Promise(async (resolve, reject) => {
-      let err, duplicated, resTechnical: any, resTickets: any;
+      let err: string, resTechnical: any , resTickets: any;
 
       //find Technical By Email
       [err, resTechnical] = await to(
