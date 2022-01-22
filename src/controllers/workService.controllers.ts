@@ -8,7 +8,10 @@ export class WorkServiceServices {
     return new Promise(async (resolve, reject) => {
       let err, duplicated, workService;
 
+      //createWorkService
       const newWorkService = getRepository(WorkService).create(params);
+
+      //saveWorkService
       [err, workService] = await to(
         getRepository(WorkService).save(newWorkService)
       );

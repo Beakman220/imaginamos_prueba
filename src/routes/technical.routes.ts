@@ -1,6 +1,7 @@
-import { Router } from "express";
-import { Request, Response} from "express";
-const { TechnicalServices } = require('../controllers/technical.controllers');
+import { Router } from 'express';
+import { Request, Response} from 'express';
+import { TechnicalServices } from '../controllers/technical.controllers';
+
 import to from 'await-to-js';
 
 const router = Router();

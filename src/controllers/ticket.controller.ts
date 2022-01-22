@@ -14,10 +14,6 @@ export class TicketServices {
         resClient: any,
         resTechnical: any,
         resWorkService: any,
-        newClient: any,
-        newTechnical: any,
-        newWorkService: any,
-        res,
         newToken: any;
 
       //findCliente
@@ -71,7 +67,7 @@ export class TicketServices {
       //createTicket
       let newTicket = new Ticket();
       newTicket.note = (body.note) ? body.note : '';
-      newTicket.token = newToken ;body.isActive
+      newTicket.token = newToken ;
       newTicket.isActive = (body.isActive) ? body.isActive : true;
       newTicket.service_date = body.service_date;
       newTicket.client = resClient;
@@ -86,54 +82,10 @@ export class TicketServices {
         );
       }
 
-      //updateClient
-      if (!resClient.tickets) {
-        newClient = Client.create({
-          tickets: [resTicket],
-        });
+      if (_.isUndefined(resTicket) || _.isNull(resTicket)) {
+        return reject(new Error(`NO se guardó el ticket`));
       }
-      getRepository(Client).merge(resClient, newClient);
-      [err, res] = await to(getRepository(Client).save(newClient));
-
-      if (err) {
-        return reject(
-          new Error(`Ocurrio un error al actualizar el cliente Error: ${err}`)
-        );
-      }
-
-      //updateTechnical
-      if (!resTechnical.tickets) {
-        newTechnical = Technical.create({
-          tickets: [resTicket],
-        });
-      }
-      console.log('resTechnical 110', resTechnical);
-      console.log('newTechnical 111', newTechnical);
-      getRepository(Technical).merge(resTechnical, newTechnical);
-      console.log('newTechnical 113', newTechnical);
-      [err, res] = await to(getRepository(Technical).save(newTechnical));
-
-      if (err) {
-        return reject(
-          new Error(`Ocurrio un error al actualizar el técnico Error: ${err}`)
-        );
-      }
-
-      //updateWorkService
-      if (!resWorkService.tickets) {
-        newWorkService = WorkService.create({
-          tickets: [resTicket],
-        });
-      }
-      getRepository(WorkService).merge(resWorkService, newWorkService);
-      [err, res] = await to(getRepository(WorkService).save(newWorkService));
-
-      if (err) {
-        return reject(
-          new Error(`Ocurrio un error al actualizar el Servicio de trabajo Error: ${err}`)
-        );
-      }
-
+ 
       return resolve(resTicket);
     });
   }

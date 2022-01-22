@@ -32,8 +32,10 @@ export class TechnicalServices {
         );
       }
 
-      //Save Technical
+      //createTechnical
       const newTechnical = getRepository(Technical).create(params);
+ 
+      //Save Technical
       [err, technical] = await to(getRepository(Technical).save(newTechnical));
 
       if (err) {

@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { Request, Response} from "express";
-const { TicketServices } = require('../controllers/ticket.controller');
+import { Router } from 'express';
+import { Request, Response} from 'express';
+import { TicketServices } from '../controllers/ticket.controller';
 import to from 'await-to-js';
 
 const router = Router();

@@ -6,31 +6,31 @@ export class Client extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: "varchar", nullable: true, length: 20})
+    @Column({type: "varchar", nullable: false, length: 20})
     firstName: string;
 
-    @Column({type: "varchar", nullable: true, length: 20})
+    @Column({type: "varchar", nullable: false, length: 20})
     lastName: string;
 
-    @Column({type: "varchar", nullable: true, length: 20})
+    @Column({type: "varchar", nullable: false, length: 20})
     documentType: string;
 
-    @Column({type: "varchar", nullable: true, unique: true})
+    @Column({type: "varchar", nullable: false, unique: true})
     document : string;
 
-    @Column({type: "varchar", nullable: true, unique: true})
+    @Column({type: "varchar", nullable: false, unique: true})
     email: string;
 
-    @Column({type: "varchar", nullable: true, length: 60})
+    @Column({type: "varchar", nullable: false, length: 60})
     address: string;
 
-    @Column({type: "varchar", nullable: true, unique: true})
+    @Column({type: "varchar", nullable: false, unique: true})
     cellphone: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({nullable: false})
     created_at: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({nullable: false})
     updated_at: Date;
 
     @OneToMany(() => Ticket, ticket => ticket.client)

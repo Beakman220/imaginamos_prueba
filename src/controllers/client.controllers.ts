@@ -32,8 +32,10 @@ export class ClientServices {
         );
       }
 
-      //save client
+      //createClient
       const newClient = getRepository(Client).create(params);
+
+      //save client
       [err, client] = await to(getRepository(Client).save(newClient));
 
       if (err) {

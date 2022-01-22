@@ -8,22 +8,22 @@ export class Ticket extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: "varchar", nullable: true, unique: true})
+    @Column({type: "varchar", nullable: false, unique: true})
     token: string;
 
-    @Column()
+    @Column({nullable: false})
     isActive: boolean;
 
     @Column({type: "varchar", nullable: true, length: 20})
     note: string;
 
-    @Column({ type: "timestamptz", nullable: true })
+    @Column({ type: "timestamptz", nullable: false })
     service_date: Date;
 
-    @CreateDateColumn()
+    @CreateDateColumn({nullable: false})
     created_at: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({nullable: false})
     updated_at: Date;
 
     @ManyToOne(() => Client, client => client.tickets)
