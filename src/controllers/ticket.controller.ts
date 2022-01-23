@@ -4,7 +4,7 @@ import { Client } from "../entity/Client";
 import { Technical } from "../entity/Technical";
 import { WorkService } from "../entity/WorkService";
 import to from "await-to-js";
-import _, { random } from "lodash";
+import _ from "lodash";
 import jwt from "jsonwebtoken";
 export class TicketServices {
   create(body: any, params: any) {
@@ -76,9 +76,6 @@ export class TicketServices {
 
       [err, resTicket] = await to(getRepository(Ticket).save(newTicket));
 
-      console.log('err', err);
-      console.log('resTicket', resTicket);
-
       if (err) {
         return reject(
           new Error(`Ocurrio un error al registrar el ticket Error: ${err}`)
@@ -88,7 +85,7 @@ export class TicketServices {
       if (_.isUndefined(resTicket) || _.isNull(resTicket)) {
         return reject(new Error(`NO se guardó el ticket`));
       }
- 
+
       return resolve(resTicket);
     });
   }

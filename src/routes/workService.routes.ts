@@ -6,7 +6,7 @@ import to from 'await-to-js';
 
 const router = Router();
 
-router.post('/workServices/create', async (req: Request, res: Response): Promise<Response> => {
+router.post('/workService/create', async (req: Request, res: Response): Promise<Response> => {
   try {
     let workServiceController = new WorkServiceServices();
     const [err, data] = await to(workServiceController.create(req.body));

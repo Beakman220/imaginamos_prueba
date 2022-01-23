@@ -5,7 +5,7 @@ import to from 'await-to-js';
 
 const router = Router();
 
-router.post('/tickets/create/:id', async (req: Request, res: Response): Promise<Response> => {
+router.post('/ticket/create/:id', async (req: Request, res: Response): Promise<Response> => {
   try {
     let ticketController = new TicketServices();
     const [err, data] = await to(ticketController.create(req.body, req.params));

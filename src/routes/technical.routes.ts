@@ -6,7 +6,7 @@ import to from 'await-to-js';
 
 const router = Router();
 
-router.post('/technicals/create', async (req: Request, res: Response): Promise<Response> => {
+router.post('/technical/create', async (req: Request, res: Response): Promise<Response> => {
   try {
     let technicalController = new TechnicalServices();
     const [err, data] = await to(technicalController.create(req.body));
@@ -27,7 +27,7 @@ router.post('/technicals/create', async (req: Request, res: Response): Promise<R
 
 });
 
-router.get('/technicals/ticket/list/:email', async (req: Request, res: Response): Promise<Response> => {
+router.get('/technical/tickets/list/:email', async (req: Request, res: Response): Promise<Response> => {
   try {
     let technicalController = new TechnicalServices();
     const [err, data] = await to(technicalController.listTickets(req.params));
@@ -43,8 +43,6 @@ router.get('/technicals/ticket/list/:email', async (req: Request, res: Response)
   } catch (error) {
     return res.status(500).json(`Error:  [${error}]`);
   }
-
-
 
 });
 export default router;

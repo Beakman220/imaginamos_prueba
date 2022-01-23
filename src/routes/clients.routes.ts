@@ -4,21 +4,12 @@ import { ClientServices } from '../controllers/client.controllers';
 
 import to from 'await-to-js';
 
-/*
-import {
-  getClients,
-  createClient,
-  getClient,
-  updateClient,
-  deleteClient,
-} from '../controllers/client.controllers';
-*/
 
 
 const router = Router();
 
 router.post(
-  '/clients/create',
+  '/client/create',
   async (req: Request, res: Response): Promise<Response> => {
     try {
       let clientController = new ClientServices();
@@ -40,10 +31,4 @@ router.post(
   }
 );
 
-/*
-router.get('/clients', getClients);
-router.get('/clients/:id', getClient);
-router.put('/clients/:id', updateClient);
-router.delete('/clients/:id', deleteClient);
-*/
 export default router;
