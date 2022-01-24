@@ -12,7 +12,7 @@
 ##### Tercer Instalar dependencias
       * npm i
       * npm run build
-      * npm tun start
+      * npm run start
 
 ##### Rutas
       backend: http://localhost:3000/api/
